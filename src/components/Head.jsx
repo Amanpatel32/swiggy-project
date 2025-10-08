@@ -48,10 +48,19 @@ function Head() {
 
     async function searchResultFun(val) {
         if (val == "") return;
-        const res = await fetch(
-            `https://cors-by-codethread-for-swiggy.vercel.app/cors/dapi/misc/place-autocomplete?input=${val}`
+        const response = await fetch(
+            `https://www.swiggy.com/dapi/misc/place-autocomplete?input=${val}`
         );
-        const data = await res.json();
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error("Received non-JSON response:", text);
+            throw new Error("Received non-JSON response");
+        }
+        const data = await response.json();
         setSearchResult(data.data);
     }
 
@@ -59,10 +68,19 @@ function Head() {
         if (id == "") return;
         // console.log(id);
         handleVisibility();
-        const res = await fetch(
-            `https://cors-by-codethread-for-swiggy.vercel.app/cors/dapi/misc/address-recommend?place_id=${id}`
+        const response = await fetch(
+            `https://www.swiggy.com/dapi/misc/address-recommend?place_id=${id}`
         );
-        const data = await res.json();
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error("Received non-JSON response:", text);
+            throw new Error("Received non-JSON response");
+        }
+        const data = await response.json();
         setCoord({
             lat: data.data[0].geometry.location.lat,
             lng: data.data[0].geometry.location.lng,

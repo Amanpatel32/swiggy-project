@@ -53,43 +53,79 @@ function Search() {
     }, [isSimilarResDishes]);
 
     async function fetchSimilarResDishes() {
-        let pathname = `/city/${city}/${resLocation}`;
-        let encodedPath = encodeURIComponent(pathname);
+        try {
+            let pathname = `/city/${city}/${resLocation}`;
+            let encodedPath = encodeURIComponent(pathname);
 
-        let data = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/restaurants/search/v3?lat=${lat}&lng=${lng}&str=${searchQuery}&trackingId=null&submitAction=ENTER&selectedPLTab=dish-add&restaurantMenuUrl=${encodedPath}-rest${resId}%3Fquery%3D${searchQuery}&restaurantIdOfAddedItem=${resId}&itemAdded=${itemId}`
-        );
-        let res = await data.json();
-        // console.log("res", res);
-        // console.log(res?.data?.cards);
-        // console.log(res?.data?.cards[1])
-        setSelectedResDish(res?.data?.cards[1]);
-        // console.log(res?.data?.cards[2]?.card?.card?.cards)
-        setSimilarResDishes(res?.data?.cards[2]?.card?.card?.cards);
-        dispatch(resetSimilarResDish());
+            let response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}/restaurants/search/v3?lat=${lat}&lng=${lng}&str=${searchQuery}&trackingId=null&submitAction=ENTER&selectedPLTab=dish-add&restaurantMenuUrl=${encodedPath}-rest${resId}%3Fquery%3D${searchQuery}&restaurantIdOfAddedItem=${resId}&itemAdded=${itemId}`
+            );
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const text = await response.text();
+                console.error("Received non-JSON response:", text);
+                throw new Error("Received non-JSON response");
+            }
+            let res = await response.json();
+            // console.log("res", res);
+            // console.log(res?.data?.cards);
+            // console.log(res?.data?.cards[1])
+            setSelectedResDish(res?.data?.cards[1]);
+            // console.log(res?.data?.cards[2]?.card?.card?.cards)
+            setSimilarResDishes(res?.data?.cards[2]?.card?.card?.cards);
+            dispatch(resetSimilarResDish());
+        } catch (error) {
+            console.error("Error fetching similar restaurant dishes:", error);
+        }
     }
 
     async function fetchDishes() {
-        let data = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/restaurants/search/v3?lat=${lat}&lng=${lng}&str=${searchQuery}&trackingId=4836a39e-ca12-654d-dc3b-2af9d645f8d7&submitAction=ENTER&queryUniqueId=7abdce29-5ac6-7673-9156-3022b0e032f0`
-        );
-        let res = await data.json();      
-        console.log(res)
-        let finalData = (res?.data?.cards.find(data => data?.groupedCard).groupedCard?.cardGroupMap?.DISH?.cards).filter(
-            (data) => data?.card?.card?.["@type"].includes("food.v2.Dish")
-        ); 
+        try {
+            let response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}/restaurants/search/v3?lat=${lat}&lng=${lng}&str=${searchQuery}&trackingId=4836a39e-ca12-654d-dc3b-2af9d645f8d7&submitAction=ENTER&queryUniqueId=7abdce29-5ac6-7673-9156-3022b0e032f0`
+            );
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const text = await response.text();
+                console.error("Received non-JSON response:", text);
+                throw new Error("Received non-JSON response");
+            }
+            let res = await response.json();
+            console.log(res)
+            let finalData = (res?.data?.cards.find(data => data?.groupedCard).groupedCard?.cardGroupMap?.DISH?.cards).filter(
+                (data) => data?.card?.card?.["@type"].includes("food.v2.Dish")
+            );
 
-        console.log((res?.data?.cards.find(data => data?.groupedCard).groupedCard?.cardGroupMap?.DISH?.cards))
+            console.log((res?.data?.cards.find(data => data?.groupedCard).groupedCard?.cardGroupMap?.DISH?.cards))
 
-        console.log("finalData",finalData)
-        setDishes(finalData);
+            console.log("finalData",finalData)
+            setDishes(finalData);
+        } catch (error) {
+            console.error("Error fetching dishes:", error);
+            setDishes([]);
+        }
     }
 
     async function fetchResaturantData() {
-        let data = await fetch(
+        let response = await fetch(
             `${import.meta.env.VITE_BASE_URL}/restaurants/search/v3?lat=${lat}&lng=${lng}&str=${searchQuery}&trackingId=4836a39e-ca12-654d-dc3b-2af9d645f8d7&submitAction=ENTER&queryUniqueId=7abdce29-5ac6-7673-9156-3022b0e032f0&selectedPLTab=RESTAURANT`
         );
-        let res = await data.json();
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error("Received non-JSON response:", text);
+            throw new Error("Received non-JSON response");
+        }
+        let res = await response.json();
         const finalData = (res?.data?.cards[0]?.groupedCard?.cardGroupMap?.RESTAURANT?.cards).filter(
             (data) => data?.card?.card?.info
         );

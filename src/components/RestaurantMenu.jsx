@@ -36,12 +36,20 @@ function RestaurantMenu() {
 
     async function fetchMenu() {
         // console.log(mainId.split("rest")[1]);
-        let data = await fetch(
+        let response = await fetch(
             `${import.meta.env.VITE_BASE_URL}/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${mainId.split("rest")[1]}&catalog_qa=undefined&submitAction=ENTER`
         );
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error("Received non-JSON response:", text);
+            throw new Error("Received non-JSON response");
+        }
 
-        
-        let res = await data.json();
+        let res = await response.json();
         // console.log(res);
 
         const resInfo = res?.data?.cards.find((data) =>
