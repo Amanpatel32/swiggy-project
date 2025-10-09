@@ -16,17 +16,7 @@ function TopRestaurant({ data = [] , title }) {
         setValue((prev) => prev - 50);
     }
 
-    // async function fetchData() {
-    //     const data = await fetch(
-    //         "https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.65200&lng=77.16630&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
-    //     );
-    //     const result = await data.json();
-    //     // console.log(result?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-    //     setData(result?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-    // }
-    // useEffect(() => {
-    //     fetchData();
-    // }, []);
+   
 
     return (
         <div className="mt-14 w-full">
