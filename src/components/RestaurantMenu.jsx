@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+    import React, { useContext, useEffect, useState } from "react";
 import { json, Link, useParams } from "react-router-dom";
 import { CartContext, Coordinates } from "../context/contextApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +37,7 @@ function RestaurantMenu() {
     async function fetchMenu() {
         // console.log(mainId.split("rest")[1]);
         let response = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${mainId.split("rest")[1]}&catalog_qa=undefined&submitAction=ENTER`
+            `/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${mainId.split("rest")[1]}&catalog_qa=undefined&submitAction=ENTER`
         );
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
