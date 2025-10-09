@@ -1,4 +1,4 @@
-    import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { json, Link, useParams } from "react-router-dom";
 import { CartContext, Coordinates } from "../context/contextApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,8 +36,11 @@ function RestaurantMenu() {
 
     async function fetchMenu() {
         // console.log(mainId.split("rest")[1]);
+        const baseUrl = import.meta.env.PROD
+            ? import.meta.env.VITE_BASE_URL
+            : '/dapi';
         let response = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${mainId.split("rest")[1]}&catalog_qa=undefined&submitAction=ENTER`
+            `${baseUrl}/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${mainId.split("rest")[1]}&catalog_qa=undefined&submitAction=ENTER`
         );
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -269,16 +272,16 @@ function RestaurantMenu() {
                                                 ? "bg-gray-100"
                                                 : "bg-gray-200")
                                         }
-                                    >
-                                        <i
-                                            className={
-                                                `fi text-2xl mt-1 fi-rr-arrow-small-right ` +
-                                                (value >= 124
-                                                    ? "text-gray-300"
-                                                    : "text-gray-800")
-                                            }
-                                        ></i>
-                                    </div>
+                                >
+                                    <i
+                                        className={
+                                            `fi text-2xl mt-1 fi-rr-arrow-small-right ` +
+                                            (value >= 124
+                                                ? "text-gray-300"
+                                                : "text-gray-800")
+                                        }
+                                    ></i>
+                                </div>
                                 </div>
                             </div>
                             <div className="flex gap-4 mt-5">
