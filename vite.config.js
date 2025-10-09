@@ -7,9 +7,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/dapi': {
-        target: 'https://www.swiggy.com',
+        target: 'https://www.swiggy.com/dapi',
         changeOrigin: true,
         secure: true,
+        rewrite: (path) => path.replace(/^\/dapi/, ''),
       },
     },
   },

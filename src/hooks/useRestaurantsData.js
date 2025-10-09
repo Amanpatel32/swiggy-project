@@ -11,6 +11,8 @@ function useRestaurantsData() {
         coord: { lat, lng },
     } = useContext(Coordinates);
 
+    console.log('VITE_BASE_URL:', import.meta.env.VITE_BASE_URL);
+
     async function fetchData() {
         try {
             const response = await fetch(
